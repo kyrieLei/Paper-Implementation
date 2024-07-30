@@ -14,7 +14,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 import torch
 
-os.makedirs("/mnt/hwfile/ai4chem/leijingdi/code/Paper-Implementation/images",exist_ok=True)
+os.makedirs("/Paper-Implementation/images",exist_ok=True)
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--n_epochs", type=int, default=10, help="number of epochs of training")
