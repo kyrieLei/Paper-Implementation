@@ -88,11 +88,7 @@ if cuda:
 
 dataloader = torch.utils.data.DataLoader(
     datasets.MNIST(
-<<<<<<< HEAD
-        "/mnt/hwfile/ai4chem/leijingdi/code/Paper-Implementation/GAN/data/mnist",
-=======
         "../Paper-Implementation/GAN/data/mnist",
->>>>>>> 4f2e760c46c64247d90fec99a3d33c57522dfd9e
         train=True,
         transform=transforms.Compose([transforms.Resize(opt.img_size),transforms.ToTensor(),transforms.Normalize([0.5],[0.5])]),
     ),
@@ -144,10 +140,8 @@ for epoch in range(opt.n_epochs):
         batches_done = epoch * len(dataloader)+i
         batches_done = epoch * len(dataloader) + i
         if batches_done % opt.sample_interval == 0:
+            
             save_image(gen_imgs.data[:25], "images/%d.png" % batches_done, nrow=5, normalize=True)
-<<<<<<< HEAD
 
 
 
-=======
->>>>>>> 4f2e760c46c64247d90fec99a3d33c57522dfd9e
