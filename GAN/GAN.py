@@ -14,10 +14,10 @@ import torch.nn as nn
 import torch.nn.functional as F
 import torch
 
-os.makedirs("/mnt/hwfile/ai4chem/leijingdi/code/Paper-Implementation/image",exist_ok=True)
+os.makedirs("/mnt/hwfile/ai4chem/leijingdi/code/Paper-Implementation/images",exist_ok=True)
 
 parser = argparse.ArgumentParser()
-parser.add_argument("--n_epochs", type=int, default=200, help="number of epochs of training")
+parser.add_argument("--n_epochs", type=int, default=10, help="number of epochs of training")
 parser.add_argument("--batch_size", type=int, default=64, help="size of the batches")
 parser.add_argument("--lr", type=float, default=0.0002, help="adam: learning rate")
 parser.add_argument("--b1", type=float, default=0.5, help="adam: decay of first order momentum of gradient")
@@ -38,7 +38,7 @@ class Generator(nn.Module):
     def __init__(self):
         super(Generator,self).__init__()
         def block(in_feat, out_feat, normalize=True):
-            layers = [nn.Linear(in_feat,normalize=True)]
+            layers = [nn.Linear(in_feat,out_feat)]
             if normalize:
                 layers.append(nn.BatchNorm1d(out_feat,0.8))
             layers.append(nn.LeakyReLU(0.2,inplace=True))
@@ -49,7 +49,7 @@ class Generator(nn.Module):
             *block(256, 512),
             *block(512, 1024),
             nn.Linear(1024,int(np.prod(img_shape))),
-            nn.Tanh
+            nn.Tanh()
         )
     def forward(self, z):
         img = self.model(z)
@@ -90,10 +90,10 @@ dataloader = torch.utils.data.DataLoader(
     datasets.MNIST(
         "/mnt/hwfile/ai4chem/leijingdi/code/Paper-Implementation/GAN/data/mnist",
         train=True,
-        transform=[transforms.Resize(opt.img_size),transforms.ToTensor(),transforms.Normalize([0.5],[0.5])]
+        transform=transforms.Compose([transforms.Resize(opt.img_size),transforms.ToTensor(),transforms.Normalize([0.5],[0.5])]),
     ),
     batch_size=opt.batch_size,
-    shuffle=True
+    shuffle=True,
 )
 
 optimizer_G = torch.optim.Adam(generator.parameters(), lr=opt.lr, betas=(opt.b1, opt.b2))
@@ -112,7 +112,8 @@ for epoch in range(opt.n_epochs):
         real_imgs = torch.tensor(imgs)
 
         optimizer_G.zero_grad()
-        z = torch.tensor(np.random.normal(0,1,(imgs.shape[0],opt.latent_dim)))
+        z = Variable(Tensor(np.random.normal(0, 1, (imgs.shape[0], opt.latent_dim))))
+
 
         gen_imgs = generator(z)
 
